@@ -1,0 +1,38 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ACR_NAME: rushiacr123
+  IMAGE_NAME: dockerdemo
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to ACR
+      run: az acr login --name $ACR_NAME
+
+    - name: Build Docker Image
+      run: docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:latest .
+
+    - name: Push Docker Image
+      run: docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+
+    - name: Deploy to Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: RushiApp
+        images: $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
