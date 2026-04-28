@@ -34,5 +34,5 @@ jobs:
     - name: Deploy to Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: RushiApp
+        app-name: rushiapp-container
         images: $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
