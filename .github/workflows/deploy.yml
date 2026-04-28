@@ -31,8 +31,5 @@ jobs:
     - name: Push Docker Image
       run: docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
 
-    - name: Deploy to Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: rushiapp-container
-        images: $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+    - name: Restart Web App
+      run: az webapp restart --name rushiapp-container --resource-group docker-demo-rushi-rg
